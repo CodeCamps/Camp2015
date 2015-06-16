@@ -32,6 +32,7 @@ namespace Vikings.Actors
             new Dictionary<Actions, List<Texture2D>>();
 
         public Vector2 Location = Vector2.Zero;
+        public Vector2 Origin = Vector2.Zero;
         public bool FacingLeft = false;
         public PlayerIndex PlayerIndex = PlayerIndex.One;
         public int Health = 100;
@@ -52,6 +53,9 @@ namespace Vikings.Actors
         public virtual void Update(GameTime gametime)
         {
             Actions action = Actions.Idle;
+
+            CurrentSpriteWidth = Frames[CurrentAction][CurrentFrame].Width;
+            CurrentSpriteHeight = Frames[CurrentAction][CurrentFrame].Height;
 
             CurrentFrameDuration += gametime.ElapsedGameTime.TotalSeconds;
             if (CurrentFrameDuration >= FRAME_TIME)
@@ -80,6 +84,24 @@ namespace Vikings.Actors
                 Location.Y += -gamepad.ThumbSticks.Left.Y * 5.0f;
             }
 
+            if (Location.X < CurrentSpriteWidth / 2)
+            {
+                Location.X = CurrentSpriteWidth / 2;
+            }
+            else if (Location.X > Game1.SCREEN_WIDTH - CurrentSpriteWidth / 2)
+            {
+                Location.X = Game1.SCREEN_WIDTH - CurrentSpriteWidth / 2;
+            }
+
+            if (Location.Y < 630)
+            {
+                Location.Y = 630;
+            }
+            else if (Location.Y > Game1.SCREEN_HEIGHT)
+            {
+                Location.Y = Game1.SCREEN_HEIGHT;
+            }
+
             if (gamepad.Buttons.B == ButtonState.Pressed)
             {
                 action = Actions.Attack1;
@@ -103,6 +125,9 @@ namespace Vikings.Actors
             StartAnimation(action);
         }
 
+        public int CurrentSpriteWidth = 0;
+        public int CurrentSpriteHeight = 0;
+
         public virtual void Draw(GameTime gametime, SpriteBatch batch)
         {
             Color tint = Color.White;
@@ -111,13 +136,16 @@ namespace Vikings.Actors
                 tint = Color.Red;
             }
 
+            Origin.X = CurrentSpriteWidth / 2;
+            Origin.Y = CurrentSpriteHeight;
+
             batch.Draw(
                 Frames[CurrentAction][CurrentFrame], // texture2D
                 Location, // screen location
                 null, // source rectangle
                 tint, // tint
                 0.0f, // rotation
-                Vector2.Zero, // origin
+                Origin, // origin
                 1.0f, // scale
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
                 0.0f); // depth

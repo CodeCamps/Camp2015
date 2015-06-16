@@ -19,12 +19,22 @@ namespace Vikings
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        public const int SCREEN_WIDTH = 1024;
+        public const int SCREEN_HEIGHT = 768;
+
         Actors.Viking player1 = new Actors.Viking();
         Actors.Viking player2 = new Actors.Viking();
+        Actors.Viking player3 = new Actors.Viking();
+        Actors.Viking player4 = new Actors.Viking();
+
+        Texture2D texArena;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
+            graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
+            //graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
         }
 
@@ -61,6 +71,8 @@ namespace Vikings
             player2.Location.X = player1.Frames[Actors.Actions.Idle][0].Width + 50;
             player2.FacingLeft = true;
             player2.StartAnimation(Actors.Actions.Idle);
+
+            texArena = Content.Load<Texture2D>("arena");
         }
 
         /// <summary>
@@ -106,6 +118,9 @@ namespace Vikings
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+
+            spriteBatch.Draw(texArena, Vector2.Zero, Color.White);
+            
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 var actor = Actors.Actor.Actors[player];
