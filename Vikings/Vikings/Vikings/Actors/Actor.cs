@@ -15,6 +15,8 @@ namespace Vikings.Actors
         Walk,
         Run,
         JumpAttack,
+        Attack1,
+        Attack2, // TODO: Homework
     }
 
     public class Actor
@@ -44,6 +46,8 @@ namespace Vikings.Actors
 
         public virtual void Update(GameTime gametime)
         {
+            Actions action = Actions.Idle;
+
             CurrentFrameDuration += gametime.ElapsedGameTime.TotalSeconds;
             if (CurrentFrameDuration >= FRAME_TIME)
             {
@@ -55,7 +59,7 @@ namespace Vikings.Actors
             if (gamepad.ThumbSticks.Left.X != 0.0f)
             {
                 Location.X += gamepad.ThumbSticks.Left.X * 5.0f;
-                StartAnimation(Actions.Walk);
+                action = Actions.Walk;
                 if (gamepad.ThumbSticks.Left.X < 0)
                 {
                     FacingLeft = true;
@@ -65,15 +69,18 @@ namespace Vikings.Actors
                     FacingLeft = false;
                 }
             }
-            else
-            {
-                StartAnimation(Actions.Idle);
-            }
 
             if (gamepad.ThumbSticks.Left.Y != 0.0f)
             {
                 Location.Y += -gamepad.ThumbSticks.Left.Y * 5.0f;
             }
+
+            if (gamepad.Buttons.B == ButtonState.Pressed)
+            {
+                action = Actions.Attack1;
+            }
+
+            StartAnimation(action);
         }
 
         public virtual void Draw(GameTime gametime, SpriteBatch batch)
