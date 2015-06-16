@@ -34,9 +34,12 @@ namespace Vikings.Actors
         
         public virtual void StartAnimation(Actions action)
         {
-            CurrentAction = action;
-            CurrentFrame = 0;
-            CurrentFrameDuration = 0.0;
+            if (action != CurrentAction)
+            {
+                CurrentAction = action;
+                CurrentFrame = 0;
+                CurrentFrameDuration = 0.0;
+            }
         }
 
         public virtual void Update(GameTime gametime)
@@ -52,7 +55,21 @@ namespace Vikings.Actors
             if (gamepad.ThumbSticks.Left.X != 0.0f)
             {
                 Location.X += gamepad.ThumbSticks.Left.X * 5.0f;
+                StartAnimation(Actions.Walk);
+                if (gamepad.ThumbSticks.Left.X < 0)
+                {
+                    FacingLeft = true;
+                }
+                else
+                {
+                    FacingLeft = false;
+                }
             }
+            else
+            {
+                StartAnimation(Actions.Idle);
+            }
+
             if (gamepad.ThumbSticks.Left.Y != 0.0f)
             {
                 Location.Y += -gamepad.ThumbSticks.Left.Y * 5.0f;
