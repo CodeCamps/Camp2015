@@ -55,6 +55,7 @@ namespace Vikings
             player2.LoadContent(Content);
             player2.Location.X = player1.Frames[Actors.Actions.Idle][0].Width + 50;
             player2.FacingLeft = true;
+            //player2.StartAnimation(Actors.Actions.Run);
         }
 
         /// <summary>

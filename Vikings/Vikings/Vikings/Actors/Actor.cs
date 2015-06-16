@@ -10,7 +10,10 @@ namespace Vikings.Actors
 {
     public enum Actions
     {
-        Idle
+        Idle,
+        Walk,
+        Run,
+        JumpAttack,
     }
 
     public class Actor
