@@ -87,21 +87,16 @@ namespace Vikings.Actors
 
             if (action == Actions.Attack1)
             {
-                if (Collision(PlayerIndex.One))
+                foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
                 {
-                    Actors[PlayerIndex.One].Health -= Damage;
-                }
-                if (Collision(PlayerIndex.Two))
-                {
-                    Actors[PlayerIndex.Two].Health -= Damage;
-                }
-                if (Collision(PlayerIndex.Three))
-                {
-                    Actors[PlayerIndex.Three].Health -= Damage;
-                }
-                if (Collision(PlayerIndex.Four))
-                {
-                    Actors[PlayerIndex.Four].Health -= Damage;
+                    var actor = Actors[player];
+                    if (actor != null)
+                    {
+                        if (Collision(player))
+                        {
+                            actor.Health -= Damage;
+                        }
+                    }
                 }
             }
 

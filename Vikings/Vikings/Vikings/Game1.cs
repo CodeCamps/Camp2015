@@ -84,8 +84,14 @@ namespace Vikings
                 this.Exit();
 
             // TODO: Add your update logic here
-            player1.Update(gameTime);
-            player2.Update(gameTime);
+            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
+            {
+                var actor = Actors.Actor.Actors[player];
+                if (actor != null)
+                {
+                    actor.Update(gameTime);
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -100,8 +106,14 @@ namespace Vikings
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            player1.Draw(gameTime, spriteBatch);
-            player2.Draw(gameTime, spriteBatch);
+            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
+            {
+                var actor = Actors.Actor.Actors[player];
+                if (actor != null)
+                {
+                    actor.Draw(gameTime, spriteBatch);
+                }
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
