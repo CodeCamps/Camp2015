@@ -37,6 +37,10 @@ namespace Vikings
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            Actors.Actor.Actors.Add(PlayerIndex.One, player1);
+            Actors.Actor.Actors.Add(PlayerIndex.Two, player2);
+            Actors.Actor.Actors.Add(PlayerIndex.Three, null);
+            Actors.Actor.Actors.Add(PlayerIndex.Four, null);
 
             base.Initialize();
         }
