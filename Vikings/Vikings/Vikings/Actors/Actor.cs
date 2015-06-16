@@ -148,7 +148,7 @@ namespace Vikings.Actors
                 Origin, // origin
                 1.0f, // scale
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
-                0.0f); // depth
+                1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT); // depth
         }
 
         public bool Collision(PlayerIndex player)

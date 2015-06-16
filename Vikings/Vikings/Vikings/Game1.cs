@@ -66,9 +66,14 @@ namespace Vikings
 
             // TODO: use this.Content to load your game content here
             player1.LoadContent(Content);
+            player1.PlayerIndex = PlayerIndex.One;
+            player1.Location = Vector2.Zero;
+            player1.FacingLeft = false;
+            player1.StartAnimation(Actors.Actions.Idle);
+
             player2.LoadContent(Content);
             player2.PlayerIndex = PlayerIndex.Two;
-            player2.Location.X = player1.Frames[Actors.Actions.Idle][0].Width + 50;
+            player2.Location = Vector2.One * 2000.0f;
             player2.FacingLeft = true;
             player2.StartAnimation(Actors.Actions.Idle);
 
@@ -118,9 +123,10 @@ namespace Vikings
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-
             spriteBatch.Draw(texArena, Vector2.Zero, Color.White);
-            
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 var actor = Actors.Actor.Actors[player];
