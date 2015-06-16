@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Vikings.Actors
 {
@@ -27,6 +28,7 @@ namespace Vikings.Actors
 
         public Vector2 Location = Vector2.Zero;
         public bool FacingLeft = false;
+        public PlayerIndex PlayerIndex = PlayerIndex.One;
 
         public virtual void LoadContent(ContentManager content) { }
         
@@ -44,6 +46,16 @@ namespace Vikings.Actors
             {
                 CurrentFrame = (CurrentFrame + 1) % Frames[CurrentAction].Count;
                 CurrentFrameDuration = 0.0;
+            }
+
+            var gamepad = GamePad.GetState(PlayerIndex);
+            if (gamepad.ThumbSticks.Left.X != 0.0f)
+            {
+                Location.X += gamepad.ThumbSticks.Left.X * 5.0f;
+            }
+            if (gamepad.ThumbSticks.Left.Y != 0.0f)
+            {
+                Location.Y += -gamepad.ThumbSticks.Left.Y * 5.0f;
             }
         }
 

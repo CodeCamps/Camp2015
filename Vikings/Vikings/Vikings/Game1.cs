@@ -53,9 +53,10 @@ namespace Vikings
             // TODO: use this.Content to load your game content here
             player1.LoadContent(Content);
             player2.LoadContent(Content);
+            player2.PlayerIndex = PlayerIndex.Two;
             player2.Location.X = player1.Frames[Actors.Actions.Idle][0].Width + 50;
             player2.FacingLeft = true;
-            //player2.StartAnimation(Actors.Actions.Run);
+            player2.StartAnimation(Actors.Actions.Idle);
         }
 
         /// <summary>
