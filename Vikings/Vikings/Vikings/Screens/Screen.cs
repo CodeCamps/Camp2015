@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,9 +11,9 @@ namespace Vikings.Screens
 {
     public class Screen
     {
-        private static Stack<Screen> Screens = new Stack<Screen>();
+        public static Stack<Screen> Screens = new Stack<Screen>();
         
-        public void Show()
+        public virtual void Show(ContentManager Content)
         {
             Screens.Push(this);
         }
@@ -39,6 +40,14 @@ namespace Vikings.Screens
         public virtual void Update(GameTime gameTime) { }
         public static void DoUpdate(GameTime gameTime)
         {
+            if (gamepads.Count == 0)
+            {
+                gamepads.Add(PlayerIndex.One, new GamePadState());
+                gamepads.Add(PlayerIndex.Two, new GamePadState());
+                gamepads.Add(PlayerIndex.Three, new GamePadState());
+                gamepads.Add(PlayerIndex.Four, new GamePadState());
+            }
+
             bool dismissScreen = false;
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {

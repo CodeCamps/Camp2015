@@ -22,14 +22,6 @@ namespace Vikings
         public const int SCREEN_WIDTH = 1024;
         public const int SCREEN_HEIGHT = 768;
 
-        Actors.Viking player1 = new Actors.Viking();
-        Actors.Viking player2 = new Actors.Viking();
-        Actors.Viking player3 = new Actors.Viking();
-        Actors.Viking player4 = new Actors.Viking();
-
-        public static Texture2D texArena;
-        public static Texture2D texProgress;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -48,10 +40,6 @@ namespace Vikings
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            Actors.Actor.Actors.Add(PlayerIndex.One, player1);
-            Actors.Actor.Actors.Add(PlayerIndex.Two, player2);
-            Actors.Actor.Actors.Add(PlayerIndex.Three, null);
-            Actors.Actor.Actors.Add(PlayerIndex.Four, null);
 
             base.Initialize();
         }
@@ -66,20 +54,6 @@ namespace Vikings
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            player1.LoadContent(Content);
-            player1.PlayerIndex = PlayerIndex.One;
-            player1.Location = Vector2.Zero;
-            player1.FacingLeft = false;
-            player1.StartAnimation(Actors.Actions.Idle);
-
-            player2.LoadContent(Content);
-            player2.PlayerIndex = PlayerIndex.Two;
-            player2.Location = Vector2.One * 2000.0f;
-            player2.FacingLeft = true;
-            player2.StartAnimation(Actors.Actions.Idle);
-
-            texArena = Content.Load<Texture2D>("arena");
-            texProgress = Content.Load<Texture2D>("debug-square-8x8");
         }
 
         /// <summary>
@@ -103,14 +77,12 @@ namespace Vikings
                 this.Exit();
 
             // TODO: Add your update logic here
-            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
+            if (Screens.Screen.Screens.Count < 1)
             {
-                var actor = Actors.Actor.Actors[player];
-                if (actor != null)
-                {
-                    actor.Update(gameTime);
-                }
+                Screens.BattleScreen screen = new Screens.BattleScreen();
+                screen.Show(Content);
             }
+            Screens.Screen.DoUpdate(gameTime);
 
             base.Update(gameTime);
         }
@@ -124,20 +96,7 @@ namespace Vikings
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            spriteBatch.Draw(texArena, Vector2.Zero, Color.White);
-            spriteBatch.End();
-
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
-            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
-            {
-                var actor = Actors.Actor.Actors[player];
-                if (actor != null)
-                {
-                    actor.Draw(gameTime, spriteBatch);
-                }
-            }
-            spriteBatch.End();
+            Screens.Screen.DoDraw(gameTime, spriteBatch);
 
             base.Draw(gameTime);
         }

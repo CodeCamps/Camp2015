@@ -164,11 +164,11 @@ namespace Vikings.Actors
             rectFull.Height = 20;
             rectFull.Y = (int)Location.Y - CurrentSpriteHeight - 20;
             rectFull.X = (int)Location.X - CurrentSpriteWidth / 2;
-            batch.Draw(Game1.texProgress, rectFull, null, Color.Red);
+            batch.Draw(Screens.BattleScreen.texProgress, rectFull, null, Color.Red);
             
             Rectangle rectHealth = rectFull;
             rectHealth.Width = (int)((float)rectFull.Width * (float)Health / 100.0f);
-            batch.Draw(Game1.texProgress, rectHealth, null, Color.Green);
+            batch.Draw(Screens.BattleScreen.texProgress, rectHealth, null, Color.Green);
         }
 
         public bool Collision(PlayerIndex player)
