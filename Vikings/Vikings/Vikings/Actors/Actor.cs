@@ -107,7 +107,12 @@ namespace Vikings.Actors
                 action = Actions.Attack1;
             }
 
-            if (action == Actions.Attack1)
+            if (gamepad.Buttons.Y == ButtonState.Pressed)
+            {
+                action = Actions.Attack2;
+            }
+
+            if (action == Actions.Attack1 || action == Actions.Attack2)
             {
                 foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
                 {
@@ -117,6 +122,10 @@ namespace Vikings.Actors
                         if (Collision(player))
                         {
                             actor.Health -= Damage;
+                            if (actor.Health < 0)
+                            {
+                                actor.Health = 0;
+                            }
                         }
                     }
                 }
@@ -134,6 +143,7 @@ namespace Vikings.Actors
             if (Health < 100)
             {
                 tint = Color.Red;
+                tint = new Color(255, 255, 255, 128);
             }
 
             Origin.X = CurrentSpriteWidth / 2;
@@ -149,6 +159,16 @@ namespace Vikings.Actors
                 1.0f, // scale
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
                 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT); // depth
+
+            Rectangle rectFull = Frames[CurrentAction][CurrentFrame].Bounds;
+            rectFull.Height = 20;
+            rectFull.Y = (int)Location.Y - CurrentSpriteHeight - 20;
+            rectFull.X = (int)Location.X - CurrentSpriteWidth / 2;
+            batch.Draw(Game1.texProgress, rectFull, null, Color.Red);
+            
+            Rectangle rectHealth = rectFull;
+            rectHealth.Width = (int)((float)rectFull.Width * (float)Health / 100.0f);
+            batch.Draw(Game1.texProgress, rectHealth, null, Color.Green);
         }
 
         public bool Collision(PlayerIndex player)

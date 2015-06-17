@@ -27,7 +27,8 @@ namespace Vikings
         Actors.Viking player3 = new Actors.Viking();
         Actors.Viking player4 = new Actors.Viking();
 
-        Texture2D texArena;
+        public static Texture2D texArena;
+        public static Texture2D texProgress;
 
         public Game1()
         {
@@ -78,6 +79,7 @@ namespace Vikings
             player2.StartAnimation(Actors.Actions.Idle);
 
             texArena = Content.Load<Texture2D>("arena");
+            texProgress = Content.Load<Texture2D>("debug-square-8x8");
         }
 
         /// <summary>

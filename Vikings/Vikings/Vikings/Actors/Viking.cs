@@ -57,6 +57,17 @@ namespace Vikings.Actors
             Frames[Actions.Attack1].Add(content.Load<Texture2D>("vikingswingA0013"));
             Frames[Actions.Attack1].Add(content.Load<Texture2D>("vikingswingA0015"));
 
+            Frames.Add(Actions.Attack2, new List<Texture2D>());
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0001"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0003"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0005"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0007"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0009"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0011"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0013"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0015"));
+            Frames[Actions.Attack2].Add(content.Load<Texture2D>("vikingswingB0017"));
+
             base.LoadContent(content);
         }
     }
