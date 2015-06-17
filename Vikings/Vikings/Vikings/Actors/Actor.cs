@@ -16,7 +16,7 @@ namespace Vikings.Actors
         Run,
         JumpAttack,
         Attack1,
-        Attack2, // TODO: Homework
+        Attack2,
     }
 
     public class Actor
@@ -25,6 +25,9 @@ namespace Vikings.Actors
             new Dictionary<PlayerIndex, Actor>();
 
         public Actions CurrentAction = Actions.Idle;
+        public const double DAMAGE_TIME = 2.0;
+        public double DamageDuration = 0.0;
+
         public const double FRAME_TIME = 0.2;
         public int CurrentFrame = 0;
         public double CurrentFrameDuration = 0.0;
@@ -53,6 +56,19 @@ namespace Vikings.Actors
         public virtual void Update(GameTime gametime)
         {
             Actions action = Actions.Idle;
+
+            DamageDuration -= gametime.ElapsedGameTime.TotalSeconds;
+            if (DamageDuration < 0.0) { DamageDuration = 0.0; }
+            if (DamageDuration > 0.0)
+            {
+                GamePad.SetVibration(PlayerIndex, 1.0f, 1.0f);
+            }
+
+            if (DamageDuration <= 0.0)
+            {
+                DamageDuration = 0.0;
+                GamePad.SetVibration(PlayerIndex, 0.0f, 0.0f);
+            }
 
             CurrentSpriteWidth = Frames[CurrentAction][CurrentFrame].Width;
             CurrentSpriteHeight = Frames[CurrentAction][CurrentFrame].Height;
@@ -114,6 +130,8 @@ namespace Vikings.Actors
 
             if (action == Actions.Attack1 || action == Actions.Attack2)
             {
+                bool wasHit = false;
+                bool wasKilled = false;
                 foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
                 {
                     var actor = Actors[player];
@@ -122,17 +140,31 @@ namespace Vikings.Actors
                         if (Collision(player))
                         {
                             actor.Health -= Damage;
+                            actor.DamageDuration = DAMAGE_TIME;
+                            wasHit = true;
                             if (actor.Health < 0)
                             {
+                                wasKilled = true;
                                 actor.Health = 0;
                             }
                         }
                     }
                 }
+                if (wasKilled)
+                {
+                    Screens.BattleScreen.sndThud.Play();
+                }
+                else if (wasHit)
+                {
+                    int i = random.Next(Screens.BattleScreen.sndClangs.Count);
+                    Screens.BattleScreen.sndClangs[i].Play();
+                }
             }
 
             StartAnimation(action);
         }
+
+        public static Random random = new Random();
 
         public int CurrentSpriteWidth = 0;
         public int CurrentSpriteHeight = 0;
@@ -140,9 +172,8 @@ namespace Vikings.Actors
         public virtual void Draw(GameTime gametime, SpriteBatch batch)
         {
             Color tint = Color.White;
-            if (Health < 100)
+            if (DamageDuration > 0.0)
             {
-                tint = Color.Red;
                 tint = new Color(255, 255, 255, 128);
             }
 
@@ -160,7 +191,7 @@ namespace Vikings.Actors
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
                 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT); // depth
 
-            Rectangle rectFull = Frames[CurrentAction][CurrentFrame].Bounds;
+            Rectangle rectFull = Frames[Actions.Walk][CurrentFrame].Bounds;
             rectFull.Height = 20;
             rectFull.Y = (int)Location.Y - CurrentSpriteHeight - 20;
             rectFull.X = (int)Location.X - CurrentSpriteWidth / 2;
@@ -177,13 +208,34 @@ namespace Vikings.Actors
             Actor opponent = Actors[player];
             if (opponent != null && player != PlayerIndex)
             {
-                Rectangle rectOpponent = opponent.Frames[opponent.CurrentAction][0].Bounds;
-                rectOpponent.X = (int)opponent.Location.X;
-                rectOpponent.Y = (int)opponent.Location.Y;
-                Rectangle rectMe = Frames[CurrentAction][0].Bounds;
-                rectMe.X = (int)Location.X;
-                rectMe.Y = (int)Location.Y;
-                result = rectMe.Intersects(rectOpponent);
+                bool allowCollision = true;
+                if (Math.Abs(Location.Y - opponent.Location.Y) > 10)
+                {
+                    allowCollision = false;
+                }
+                if (opponent.Location.X >= Location.X && FacingLeft)
+                {
+                    allowCollision = false;
+                }
+                if (opponent.Location.X <= Location.X && !FacingLeft)
+                {
+                    allowCollision = false;
+                }
+                if (opponent.DamageDuration > 0.0)
+                {
+                    allowCollision = false;
+                }
+
+                if (allowCollision)
+                {
+                    Rectangle rectOpponent = opponent.Frames[opponent.CurrentAction][0].Bounds;
+                    rectOpponent.X = (int)opponent.Location.X;
+                    rectOpponent.Y = (int)opponent.Location.Y;
+                    Rectangle rectMe = Frames[CurrentAction][0].Bounds;
+                    rectMe.X = (int)Location.X;
+                    rectMe.Y = (int)Location.Y;
+                    result = rectMe.Intersects(rectOpponent);
+                }
             }
             return result;
         }
