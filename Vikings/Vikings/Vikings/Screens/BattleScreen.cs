@@ -19,20 +19,7 @@ namespace Vikings.Screens
         Actors.Viking player4 = new Actors.Viking();
 
         public static Texture2D texArena;
-        public static Texture2D texProgress;
-
-        public static Texture2D texHealthBar;
-        public static Texture2D texHealthP1;
-        public static Texture2D texHealthP2;
-        public static Texture2D texHealthP3;
-        public static Texture2D texHealthP4;
-
         public static Song music;
-
-        public static List<SoundEffect> sndClangs = new List<SoundEffect>();
-        //public static List<SoundEffect> sndGrunts = new List<SoundEffect>();
-        public static List<SoundEffect> sndTaunts = new List<SoundEffect>();
-        public static SoundEffect sndThud;
 
         private Vector2[] StartLocations = 
         {
@@ -54,40 +41,18 @@ namespace Vikings.Screens
         {
             base.Show(Content);
 
-            texArena = Content.Load<Texture2D>("arena");
-            texProgress = Content.Load<Texture2D>("debug-square-8x8");
+            if (texArena == null)
+            {
 
-            texHealthBar = Content.Load<Texture2D>("health/health-bar");
-            texHealthP1 = Content.Load<Texture2D>("health/player-1");
-            texHealthP2 = Content.Load<Texture2D>("health/player-2");
-            texHealthP3 = Content.Load<Texture2D>("health/player-3");
-            texHealthP4 = Content.Load<Texture2D>("health/player-4");
+                texArena = Content.Load<Texture2D>("arena");
 
-            music = Content.Load<Song>("arena-music");
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(music);
+                music = Content.Load<Song>("arena-music");
 
-            sndClangs.Add(Content.Load<SoundEffect>("sounds/sfx/clang-1"));
-            sndClangs.Add(Content.Load<SoundEffect>("sounds/sfx/clang-2"));
-            sndClangs.Add(Content.Load<SoundEffect>("sounds/sfx/clang-3"));
-            sndClangs.Add(Content.Load<SoundEffect>("sounds/sfx/grunt-1"));
-            sndClangs.Add(Content.Load<SoundEffect>("sounds/sfx/grunt-2"));
-
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-1"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-2"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-3"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-4"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-5"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-6"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-7"));
-            sndTaunts.Add(Content.Load<SoundEffect>("sounds/taunts/taunt-8"));
-
-            sndThud = Content.Load<SoundEffect>("sounds/sfx/thud");
-
-            Actors.Actor.Actors.Add(PlayerIndex.One, player1);
-            Actors.Actor.Actors.Add(PlayerIndex.Two, player2);
-            Actors.Actor.Actors.Add(PlayerIndex.Three, player3);
-            Actors.Actor.Actors.Add(PlayerIndex.Four, player4);
+                Actors.Actor.Actors.Add(PlayerIndex.One, player1);
+                Actors.Actor.Actors.Add(PlayerIndex.Two, player2);
+                Actors.Actor.Actors.Add(PlayerIndex.Three, player3);
+                Actors.Actor.Actors.Add(PlayerIndex.Four, player4);
+            }
 
             int i = 0;
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
@@ -100,8 +65,12 @@ namespace Vikings.Screens
                     actor.Location = StartLocations[i++];
                     actor.FacingLeft = actor.Location.X > 0;
                     actor.StartAnimation(Actors.Actions.Idle);
+                    actor.Health = 100;
                 }
             }
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(music);
         }
 
         public override void Update(GameTime gameTime)

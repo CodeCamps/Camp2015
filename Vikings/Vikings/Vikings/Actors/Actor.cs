@@ -23,16 +23,22 @@ namespace Vikings.Actors
     {
         public static Dictionary<PlayerIndex, Actor> Actors =
             new Dictionary<PlayerIndex, Actor>();
+        
+        // set by child (eg. Viking)
+        public Dictionary<Actions, List<Texture2D>> Frames;
+        public Texture2D texHealthBar;
+        public Texture2D texHealthP1;
+        public Texture2D texHealthP2;
+        public Texture2D texHealthP3;
+        public Texture2D texHealthP4;
 
         public Actions CurrentAction = Actions.Idle;
         public const double DAMAGE_TIME = 2.0;
         public double DamageDuration = 0.0;
 
-        public const double FRAME_TIME = 0.2;
+        public const double FRAME_TIME = 0.1;
         public int CurrentFrame = 0;
         public double CurrentFrameDuration = 0.0;
-        public Dictionary<Actions, List<Texture2D>> Frames =
-            new Dictionary<Actions, List<Texture2D>>();
 
         public Vector2 Location = Vector2.Zero;
         public Vector2 Origin = Vector2.Zero;
@@ -53,9 +59,18 @@ namespace Vikings.Actors
             }
         }
 
+        public bool wasHit = false;
+        public bool wasKilled = false;
         public virtual void Update(GameTime gametime)
         {
-            if (Health < 1 && DamageDuration <= 0.0) { GamePad.SetVibration(PlayerIndex, 0, 0); return; }
+            wasHit = false;
+            wasKilled = false;
+
+            if (Health < 1 && DamageDuration <= 0.0)
+            {
+                GamePad.SetVibration(PlayerIndex, 0, 0);
+                return;
+            }
 
             Actions action = Actions.Idle;
 
@@ -132,8 +147,6 @@ namespace Vikings.Actors
 
             if (action == Actions.Attack1 || action == Actions.Attack2)
             {
-                bool wasHit = false;
-                bool wasKilled = false;
                 foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
                 {
                     var actor = Actors[player];
@@ -151,15 +164,6 @@ namespace Vikings.Actors
                             }
                         }
                     }
-                }
-                if (wasKilled)
-                {
-                    Screens.BattleScreen.sndThud.Play();
-                }
-                else if (wasHit)
-                {
-                    int i = random.Next(Screens.BattleScreen.sndClangs.Count);
-                    Screens.BattleScreen.sndClangs[i].Play();
                 }
             }
 
@@ -194,7 +198,6 @@ namespace Vikings.Actors
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
                 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT); // depth
 
-            var texHealthBar = Screens.BattleScreen.texHealthBar;
             Rectangle rectBar = new Rectangle(
                     (int)Location.X - texHealthBar.Width / 2,
                     (int)Location.Y - texHealthBar.Height - Frames[CurrentAction][CurrentFrame].Bounds.Height,
@@ -211,16 +214,16 @@ namespace Vikings.Actors
             switch (PlayerIndex)
             {
                 case PlayerIndex.Two:
-                    texPlayer = Screens.BattleScreen.texHealthP2;
+                    texPlayer = texHealthP2;
                     break;
                 case PlayerIndex.Three:
-                    texPlayer = Screens.BattleScreen.texHealthP3;
+                    texPlayer = texHealthP3;
                     break;
                 case PlayerIndex.Four:
-                    texPlayer = Screens.BattleScreen.texHealthP4;
+                    texPlayer = texHealthP4;
                     break;
                 default:
-                    texPlayer = Screens.BattleScreen.texHealthP1;
+                    texPlayer = texHealthP1;
                     break;
             }
             batch.Draw(texPlayer, locBar, Color.White);

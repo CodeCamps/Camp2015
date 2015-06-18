@@ -56,7 +56,7 @@ namespace Vikings
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            Screens.BattleScreen screen = new Screens.BattleScreen();
+            Screens.TitleScreen screen = new Screens.TitleScreen();
             screen.Show(Content);
         }
 
