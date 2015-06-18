@@ -21,6 +21,12 @@ namespace Vikings.Screens
         public static Texture2D texArena;
         public static Texture2D texProgress;
 
+        public static Texture2D texHealthBar;
+        public static Texture2D texHealthP1;
+        public static Texture2D texHealthP2;
+        public static Texture2D texHealthP3;
+        public static Texture2D texHealthP4;
+
         public static Song music;
 
         public static List<SoundEffect> sndClangs = new List<SoundEffect>();
@@ -50,6 +56,12 @@ namespace Vikings.Screens
 
             texArena = Content.Load<Texture2D>("arena");
             texProgress = Content.Load<Texture2D>("debug-square-8x8");
+
+            texHealthBar = Content.Load<Texture2D>("health/health-bar");
+            texHealthP1 = Content.Load<Texture2D>("health/player-1");
+            texHealthP2 = Content.Load<Texture2D>("health/player-2");
+            texHealthP3 = Content.Load<Texture2D>("health/player-3");
+            texHealthP4 = Content.Load<Texture2D>("health/player-4");
 
             music = Content.Load<Song>("arena-music");
             MediaPlayer.IsRepeating = true;
@@ -130,6 +142,7 @@ namespace Vikings.Screens
 
         public override void DismissingScreen()
         {
+            MediaPlayer.Stop();
             base.DismissingScreen();
         }
     }

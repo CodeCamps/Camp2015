@@ -55,6 +55,8 @@ namespace Vikings.Actors
 
         public virtual void Update(GameTime gametime)
         {
+            if (Health < 1 && DamageDuration <= 0.0) { GamePad.SetVibration(PlayerIndex, 0, 0); return; }
+
             Actions action = Actions.Idle;
 
             DamageDuration -= gametime.ElapsedGameTime.TotalSeconds;
@@ -171,8 +173,9 @@ namespace Vikings.Actors
 
         public virtual void Draw(GameTime gametime, SpriteBatch batch)
         {
+            if (Health < 1 && DamageDuration <= 0.0) { return; }
             Color tint = Color.White;
-            if (DamageDuration > 0.0)
+            if (DamageDuration > 0.0 || Health < 1)
             {
                 tint = new Color(255, 255, 255, 128);
             }
@@ -191,15 +194,36 @@ namespace Vikings.Actors
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
                 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT); // depth
 
-            Rectangle rectFull = Frames[Actions.Walk][CurrentFrame].Bounds;
-            rectFull.Height = 20;
-            rectFull.Y = (int)Location.Y - CurrentSpriteHeight - 20;
-            rectFull.X = (int)Location.X - CurrentSpriteWidth / 2;
-            batch.Draw(Screens.BattleScreen.texProgress, rectFull, null, Color.Red);
-            
-            Rectangle rectHealth = rectFull;
-            rectHealth.Width = (int)((float)rectFull.Width * (float)Health / 100.0f);
-            batch.Draw(Screens.BattleScreen.texProgress, rectHealth, null, Color.Green);
+            var texHealthBar = Screens.BattleScreen.texHealthBar;
+            Rectangle rectBar = new Rectangle(
+                    (int)Location.X - texHealthBar.Width / 2,
+                    (int)Location.Y - texHealthBar.Height - Frames[CurrentAction][CurrentFrame].Bounds.Height,
+                    texHealthBar.Width,
+                    texHealthBar.Height);
+            Vector2 locBar = new Vector2(rectBar.X, rectBar.Y);
+            batch.Draw(texHealthBar, rectBar, null, Color.DarkRed);
+            Rectangle rectHealth = rectBar;
+            rectHealth.Location = Point.Zero;
+            rectBar.Width = rectHealth.Width = 
+                (int)Math.Round(rectHealth.Width * (Health / 100.0f));
+            batch.Draw(texHealthBar, rectBar, rectHealth, Color.Green);
+            Texture2D texPlayer;
+            switch (PlayerIndex)
+            {
+                case PlayerIndex.Two:
+                    texPlayer = Screens.BattleScreen.texHealthP2;
+                    break;
+                case PlayerIndex.Three:
+                    texPlayer = Screens.BattleScreen.texHealthP3;
+                    break;
+                case PlayerIndex.Four:
+                    texPlayer = Screens.BattleScreen.texHealthP4;
+                    break;
+                default:
+                    texPlayer = Screens.BattleScreen.texHealthP1;
+                    break;
+            }
+            batch.Draw(texPlayer, locBar, Color.White);
         }
 
         public bool Collision(PlayerIndex player)
@@ -222,6 +246,10 @@ namespace Vikings.Actors
                     allowCollision = false;
                 }
                 if (opponent.DamageDuration > 0.0)
+                {
+                    allowCollision = false;
+                }
+                if (DamageDuration > 0.0 || Health < 1)
                 {
                     allowCollision = false;
                 }

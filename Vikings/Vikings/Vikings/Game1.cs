@@ -22,6 +22,7 @@ namespace Vikings
         public const int SCREEN_WIDTH = 1024;
         public const int SCREEN_HEIGHT = 768;
 
+        public static Game1 Instance;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -40,6 +41,7 @@ namespace Vikings
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            Instance = this;
 
             base.Initialize();
         }
@@ -54,6 +56,8 @@ namespace Vikings
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            Screens.BattleScreen screen = new Screens.BattleScreen();
+            screen.Show(Content);
         }
 
         /// <summary>
@@ -77,11 +81,6 @@ namespace Vikings
             //    this.Exit();
 
             // TODO: Add your update logic here
-            if (Screens.Screen.Screens.Count < 1)
-            {
-                Screens.BattleScreen screen = new Screens.BattleScreen();
-                screen.Show(Content);
-            }
             Screens.Screen.DoUpdate(gameTime);
 
             base.Update(gameTime);

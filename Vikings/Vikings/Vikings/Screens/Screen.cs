@@ -22,8 +22,15 @@ namespace Vikings.Screens
         public virtual void DismissingScreen() { }
         public static void Dismiss()
         {
-            Screens.Peek().DismissingScreen();
-            Screens.Pop();
+            if (Screens.Count > 0)
+            {
+                Screens.Peek().DismissingScreen();
+                Screens.Pop();
+            }
+            else
+            {
+                Game1.Instance.Exit();
+            }
 
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
@@ -38,10 +45,7 @@ namespace Vikings.Screens
         protected static Dictionary<PlayerIndex, GamePadState> gamepadsPrevious =
             new Dictionary<PlayerIndex, GamePadState>();
 
-        public virtual void Update(GameTime gameTime)
-        {
-            
-        }
+        public virtual void Update(GameTime gameTime) { }
 
         public static void DoUpdate(GameTime gameTime)
         {
