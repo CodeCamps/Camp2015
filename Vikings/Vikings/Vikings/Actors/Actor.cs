@@ -187,6 +187,8 @@ namespace Vikings.Actors
             Origin.X = CurrentSpriteWidth / 2;
             Origin.Y = CurrentSpriteHeight;
 
+            var depth = 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT;
+
             batch.Draw(
                 Frames[CurrentAction][CurrentFrame], // texture2D
                 Location, // screen location
@@ -196,7 +198,7 @@ namespace Vikings.Actors
                 Origin, // origin
                 1.0f, // scale
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
-                1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT); // depth
+                depth); // depth
 
             Rectangle rectBar = new Rectangle(
                     (int)Location.X - texHealthBar.Width / 2,
@@ -204,12 +206,29 @@ namespace Vikings.Actors
                     texHealthBar.Width,
                     texHealthBar.Height);
             Vector2 locBar = new Vector2(rectBar.X, rectBar.Y);
-            batch.Draw(texHealthBar, rectBar, null, Color.DarkRed);
+            batch.Draw(
+                texHealthBar, // texture2D
+                rectBar, // screen location
+                null, // source rectangle
+                Color.DarkRed, // tint
+                0.0f, // rotation
+                Vector2.Zero, // origin
+                SpriteEffects.None, // effect
+                depth); // depth
+
             Rectangle rectHealth = rectBar;
             rectHealth.Location = Point.Zero;
             rectBar.Width = rectHealth.Width = 
                 (int)Math.Round(rectHealth.Width * (Health / 100.0f));
-            batch.Draw(texHealthBar, rectBar, rectHealth, Color.Green);
+            batch.Draw(
+                texHealthBar, // texture2D
+                rectBar, // screen location
+                rectHealth, // source rectangle
+                Color.Green, // tint
+                0.0f, // rotation
+                Vector2.Zero, // origin
+                SpriteEffects.None, // effect
+                depth); // depth
             Texture2D texPlayer;
             switch (PlayerIndex)
             {
@@ -226,7 +245,16 @@ namespace Vikings.Actors
                     texPlayer = texHealthP1;
                     break;
             }
-            batch.Draw(texPlayer, locBar, Color.White);
+            batch.Draw(
+                texPlayer, // texture2D
+                locBar, // screen location
+                null, // srcRect
+                Color.White, // tint
+                0.0f, // rotation
+                Vector2.Zero, // origin
+                1.0f, // scale
+                SpriteEffects.None, // effect
+                depth); // depth
         }
 
         public bool Collision(PlayerIndex player)
