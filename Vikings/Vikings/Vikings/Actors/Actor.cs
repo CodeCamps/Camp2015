@@ -45,9 +45,30 @@ namespace Vikings.Actors
         public bool FacingLeft = false;
         public PlayerIndex PlayerIndex = PlayerIndex.One;
         public int Health = 100;
-        public int Damage = 25;
+        public int Damage = 10;
 
-        public virtual void LoadContent(ContentManager content) { }
+        public virtual void LoadContent(ContentManager content)
+        {
+            if (ShadowColors.Count == 0)
+            {
+                ShadowColors.Add(PlayerIndex.One, Color.DarkRed);
+                ShadowColors.Add(PlayerIndex.Two, Color.DarkGreen);
+                ShadowColors.Add(PlayerIndex.Three, Color.DarkBlue);
+                ShadowColors.Add(PlayerIndex.Four, Color.Black);
+            }
+            var color = ShadowColors[PlayerIndex.One];
+            color.A = 128;
+            ShadowColors[PlayerIndex.One] = color;
+            color = ShadowColors[PlayerIndex.Two];
+            color.A = 128;
+            ShadowColors[PlayerIndex.Two] = color;
+            color = ShadowColors[PlayerIndex.Three];
+            color.A = 128;
+            ShadowColors[PlayerIndex.Three] = color;
+            color = ShadowColors[PlayerIndex.Four];
+            color.A = 128;
+            ShadowColors[PlayerIndex.Four] = color;
+        }
         
         public virtual void StartAnimation(Actions action)
         {
@@ -186,7 +207,7 @@ namespace Vikings.Actors
                 foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
                 {
                     var actor = Actors[player];
-                    if (actor != null)
+                    if (actor != null && actor.Health > 0)
                     {
                         if (Collision(player))
                         {
@@ -210,6 +231,9 @@ namespace Vikings.Actors
 
         public int CurrentSpriteWidth = 0;
         public int CurrentSpriteHeight = 0;
+
+        public Dictionary<PlayerIndex, Color> ShadowColors = 
+            new Dictionary<PlayerIndex, Color>();
 
         public virtual void Draw(GameTime gametime, SpriteBatch batch)
         {
@@ -300,7 +324,7 @@ namespace Vikings.Actors
                 texShadow, // texture2D
                 locShadow, // screen location
                 null, // srcRect
-                new Color(255, 255, 255, 128), // tint
+                ShadowColors[PlayerIndex], // tint
                 0.0f, // rotation
                 Vector2.Zero, // origin
                 1.0f, // scale

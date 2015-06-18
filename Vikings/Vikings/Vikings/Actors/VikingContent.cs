@@ -14,7 +14,8 @@ namespace Vikings.Actors
     {
         public static List<SoundEffect> sndClangs = new List<SoundEffect>();
         //public static List<SoundEffect> sndGrunts = new List<SoundEffect>();
-        public static List<SoundEffect> sndTaunts = new List<SoundEffect>();
+        public static List<SoundEffect> sndTauntsStupid = new List<SoundEffect>();
+        public static List<SoundEffect> sndTauntsSerious = new List<SoundEffect>();
         public static SoundEffect sndThud;
 
         public static Texture2D texSquare;
@@ -27,6 +28,7 @@ namespace Vikings.Actors
         public static Texture2D texHealthP4;
 
         public static Texture2D texShadow;
+        public static Texture2D texBubble;
 
         public static Dictionary<Actions, List<Texture2D>> Frames =
             new Dictionary<Actions, List<Texture2D>>();
@@ -100,6 +102,7 @@ namespace Vikings.Actors
             texHealthP4 = content.Load<Texture2D>("health/player-4");
 
             texShadow = content.Load<Texture2D>("shadow");
+            texBubble = content.Load<Texture2D>("bubble");
 
             sndClangs.Add(content.Load<SoundEffect>("sounds/sfx/clang-1"));
             sndClangs.Add(content.Load<SoundEffect>("sounds/sfx/clang-2"));
@@ -107,14 +110,15 @@ namespace Vikings.Actors
             sndClangs.Add(content.Load<SoundEffect>("sounds/sfx/grunt-1"));
             sndClangs.Add(content.Load<SoundEffect>("sounds/sfx/grunt-2"));
 
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-1"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-2"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-3"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-4"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-5"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-6"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-7"));
-            sndTaunts.Add(content.Load<SoundEffect>("sounds/taunts/taunt-8"));
+            sndTauntsSerious.Add(content.Load<SoundEffect>("sounds/taunts/taunt-1"));
+            sndTauntsSerious.Add(content.Load<SoundEffect>("sounds/taunts/taunt-2"));
+            sndTauntsSerious.Add(content.Load<SoundEffect>("sounds/taunts/taunt-3"));
+            sndTauntsSerious.Add(content.Load<SoundEffect>("sounds/taunts/taunt-4"));
+            
+            sndTauntsStupid.Add(content.Load<SoundEffect>("sounds/taunts/taunt-5"));
+            sndTauntsStupid.Add(content.Load<SoundEffect>("sounds/taunts/taunt-6"));
+            sndTauntsStupid.Add(content.Load<SoundEffect>("sounds/taunts/taunt-7"));
+            sndTauntsStupid.Add(content.Load<SoundEffect>("sounds/taunts/taunt-8"));
 
             sndThud = content.Load<SoundEffect>("sounds/sfx/thud");
         }
