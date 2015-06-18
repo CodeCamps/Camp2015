@@ -187,7 +187,7 @@ namespace Vikings.Actors
             Origin.X = CurrentSpriteWidth / 2;
             Origin.Y = CurrentSpriteHeight;
 
-            var depth = 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT;
+            var depth = 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT + 0.04f;
 
             batch.Draw(
                 Frames[CurrentAction][CurrentFrame], // texture2D
@@ -198,7 +198,7 @@ namespace Vikings.Actors
                 Origin, // origin
                 1.0f, // scale
                 FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
-                depth); // depth
+                depth - 0.01f); // depth
 
             Rectangle rectBar = new Rectangle(
                     (int)Location.X - texHealthBar.Width / 2,
@@ -214,7 +214,7 @@ namespace Vikings.Actors
                 0.0f, // rotation
                 Vector2.Zero, // origin
                 SpriteEffects.None, // effect
-                depth); // depth
+                depth - 0.02f); // depth
 
             Rectangle rectHealth = rectBar;
             rectHealth.Location = Point.Zero;
@@ -228,7 +228,7 @@ namespace Vikings.Actors
                 0.0f, // rotation
                 Vector2.Zero, // origin
                 SpriteEffects.None, // effect
-                depth); // depth
+                depth - 0.03f); // depth
             Texture2D texPlayer;
             switch (PlayerIndex)
             {
@@ -254,7 +254,7 @@ namespace Vikings.Actors
                 Vector2.Zero, // origin
                 1.0f, // scale
                 SpriteEffects.None, // effect
-                depth); // depth
+                depth - 0.04f); // depth
         }
 
         public bool Collision(PlayerIndex player)
