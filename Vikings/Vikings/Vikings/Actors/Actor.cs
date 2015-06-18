@@ -91,10 +91,41 @@ namespace Vikings.Actors
             CurrentSpriteHeight = Frames[CurrentAction][CurrentFrame].Height;
 
             CurrentFrameDuration += gametime.ElapsedGameTime.TotalSeconds;
+            var inAnimation = false;
+            inAnimation =
+                CurrentAction == Actions.Attack1 ||
+                CurrentAction == Actions.Attack2 ||
+                CurrentAction == Actions.JumpAttack;
             if (CurrentFrameDuration >= FRAME_TIME)
             {
-                CurrentFrame = (CurrentFrame + 1) % Frames[CurrentAction].Count;
+                CurrentFrame = (CurrentFrame + 1); // % Frames[CurrentAction].Count;
+                switch (CurrentAction)
+                {
+                    case Actions.Attack1:
+                    case Actions.Attack2:
+                    case Actions.JumpAttack:
+                        action = CurrentAction;
+                        if (CurrentFrame >= Frames[CurrentAction].Count)
+                        {
+                            action = Actions.Idle;
+                            CurrentFrame = 0;
+                            CurrentFrameDuration = 0.0;
+                        }
+                        else
+                        {
+                            CurrentFrameDuration = 0.0;
+                            return;
+                        }
+                        break;
+                    default:
+                        CurrentFrame = CurrentFrame % Frames[CurrentAction].Count;
+                        break;
+                }
                 CurrentFrameDuration = 0.0;
+            }
+            else if(inAnimation)
+            {
+                return;
             }
 
             var gamepad = GamePad.GetState(PlayerIndex);
@@ -145,7 +176,12 @@ namespace Vikings.Actors
                 action = Actions.Attack2;
             }
 
-            if (action == Actions.Attack1 || action == Actions.Attack2)
+            if (gamepad.Buttons.A == ButtonState.Pressed)
+            {
+                action = Actions.JumpAttack;
+            }
+
+            if (action == Actions.Attack1 || action == Actions.Attack2 || action == Actions.JumpAttack)
             {
                 foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
                 {
@@ -255,6 +291,21 @@ namespace Vikings.Actors
                 1.0f, // scale
                 SpriteEffects.None, // effect
                 depth - 0.04f); // depth
+
+            var texShadow = VikingContent.texShadow;
+            var locShadow = Location;
+            locShadow.X -= texShadow.Bounds.Width / 2;
+            locShadow.Y -= texShadow.Bounds.Height;
+            batch.Draw(
+                texShadow, // texture2D
+                locShadow, // screen location
+                null, // srcRect
+                new Color(255, 255, 255, 128), // tint
+                0.0f, // rotation
+                Vector2.Zero, // origin
+                1.0f, // scale
+                SpriteEffects.None, // effect
+                depth); // depth
         }
 
         public bool Collision(PlayerIndex player)

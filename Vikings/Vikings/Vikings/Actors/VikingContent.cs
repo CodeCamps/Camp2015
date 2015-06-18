@@ -26,6 +26,8 @@ namespace Vikings.Actors
         public static Texture2D texHealthP3;
         public static Texture2D texHealthP4;
 
+        public static Texture2D texShadow;
+
         public static Dictionary<Actions, List<Texture2D>> Frames =
             new Dictionary<Actions, List<Texture2D>>();
 
@@ -96,6 +98,8 @@ namespace Vikings.Actors
             texHealthP2 = content.Load<Texture2D>("health/player-2");
             texHealthP3 = content.Load<Texture2D>("health/player-3");
             texHealthP4 = content.Load<Texture2D>("health/player-4");
+
+            texShadow = content.Load<Texture2D>("shadow");
 
             sndClangs.Add(content.Load<SoundEffect>("sounds/sfx/clang-1"));
             sndClangs.Add(content.Load<SoundEffect>("sounds/sfx/clang-2"));
