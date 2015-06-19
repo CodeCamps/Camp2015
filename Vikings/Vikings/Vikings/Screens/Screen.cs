@@ -72,9 +72,9 @@ namespace Vikings.Screens
             return gamePadState;
         }
 
-        protected static Dictionary<PlayerIndex, GamePadState> gamepads =
+        public static Dictionary<PlayerIndex, GamePadState> gamepads =
             new Dictionary<PlayerIndex, GamePadState>();
-        protected static Dictionary<PlayerIndex, GamePadState> gamepadsPrevious =
+        public static Dictionary<PlayerIndex, GamePadState> gamepadsPrevious =
             new Dictionary<PlayerIndex, GamePadState>();
 
         public virtual void Update(GameTime gameTime) { }
