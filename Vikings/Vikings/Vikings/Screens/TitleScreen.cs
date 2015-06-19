@@ -21,15 +21,113 @@ namespace Vikings.Screens
         public static Song music;
         private ContentManager contentManager;
 
+        public List<Texture2D> credits = new List<Texture2D>();
+        public int CurrentCreditIndex = 0;
+
+        public float xStartLeft;
+        public float xStartRight;
+        public int runWidth;
+
         public override void Show(ContentManager Content)
         {
             base.Show(Content);
             contentManager = Content;
+
+            if (credits.Count == 0)
+            {
+                credits.Add(Content.Load<Texture2D>("credits/aiden"));
+                credits.Add(Content.Load<Texture2D>("credits/alexys"));
+                credits.Add(Content.Load<Texture2D>("credits/cage"));
+                credits.Add(Content.Load<Texture2D>("credits/carlton"));
+                credits.Add(Content.Load<Texture2D>("credits/daniel"));
+                credits.Add(Content.Load<Texture2D>("credits/ian"));
+                credits.Add(Content.Load<Texture2D>("credits/jake"));
+                credits.Add(Content.Load<Texture2D>("credits/james"));
+                credits.Add(Content.Load<Texture2D>("credits/jess"));
+                credits.Add(Content.Load<Texture2D>("credits/lamia"));
+                credits.Add(Content.Load<Texture2D>("credits/lauren"));
+                credits.Add(Content.Load<Texture2D>("credits/lee"));
+                credits.Add(Content.Load<Texture2D>("credits/luke"));
+                credits.Add(Content.Load<Texture2D>("credits/pierce"));
+                credits.Add(Content.Load<Texture2D>("credits/randon"));
+                credits.Add(Content.Load<Texture2D>("credits/addi"));
+                credits.Add(Content.Load<Texture2D>("credits/joehall"));
+
+                player1.LoadContent(Content);
+                player2.LoadContent(Content);
+                player3.LoadContent(Content);
+
+                music = Content.Load<Song>("title");
+            }
+
+            runWidth = Actors.VikingContent.Frames[Actors.Actions.Run][0].Bounds.Width;
+            var nameHeight = credits[0].Bounds.Height;
+            var runTop = Game1.SCREEN_HEIGHT / 3;
+            var runLaneHeight = (Game1.SCREEN_HEIGHT - runTop) / 3;
+
+            xStartLeft = 0 - runWidth;
+            xStartRight = Game1.SCREEN_WIDTH + runWidth;
+
+            player1.PlayerIndex = PlayerIndex.One;
+            player1.IgnoreInput = true;
+            player1.ShowHealth = false;
+            player1.FacingLeft = true;
+            player1.Location = new Vector2(
+                xStartRight,
+                runTop + runLaneHeight * 0 + nameHeight);
+            
+            player2.PlayerIndex = PlayerIndex.One;
+            player2.IgnoreInput = true;
+            player2.ShowHealth = false;
+            player2.FacingLeft = true;
+            player2.Location = new Vector2(
+                xStartRight,
+                runTop + runLaneHeight * 2 + nameHeight);
+
+            player3.PlayerIndex = PlayerIndex.One;
+            player3.IgnoreInput = true;
+            player3.ShowHealth = false;
+            player3.FacingLeft = false;
+            player3.Location = new Vector2(
+                xStartLeft,
+                runTop + runLaneHeight * 1 + nameHeight);
+
+            player1.StartAnimation(Actors.Actions.Run);
+            player2.StartAnimation(Actors.Actions.Run);
+            player3.StartAnimation(Actors.Actions.Run);
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(music);
         }
+
+        bool CanSwapNames = true;
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            var distance = gameTime.ElapsedGameTime.TotalSeconds * 250.0f;
+
+            player1.Update(gameTime);
+            player1.Location.X -= (float)distance;
+            player2.Update(gameTime);
+            player2.Location.X -= (float)distance;
+            player3.Update(gameTime);
+            player3.Location.X += (float)distance;
+
+            if (CanSwapNames && player1.Location.X <= 90 + runWidth / 2)
+            {
+                CurrentCreditIndex += 3;
+                CanSwapNames = false;
+            }
+
+            if (player1.Location.X <= -runWidth)
+            {
+                CanSwapNames = true;
+                player1.Location.X = xStartRight;
+                player2.Location.X = xStartRight;
+                player3.Location.X = xStartLeft;
+            }
 
             bool start = false;
             bool exit = false;
@@ -61,11 +159,13 @@ namespace Vikings.Screens
 
             if (start)
             {
+                MediaPlayer.Stop();
                 Screens.BattleScreen screen = new Screens.BattleScreen();
                 screen.Show(contentManager);
             }
             else if (exit)
             {
+                MediaPlayer.Stop();
                 Game1.Instance.Exit();
             }
         }
@@ -73,6 +173,52 @@ namespace Vikings.Screens
         public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
             base.Draw(gameTime, batch);
+
+            var runHeight = Actors.VikingContent.Frames[Actors.Actions.Run][0].Bounds.Height;
+            var locName1 = new Vector2(90, player1.Location.Y - runHeight / 2);
+            var locName2 = new Vector2(90, player2.Location.Y - runHeight / 2);
+            var locName3 = new Vector2(
+                Game1.SCREEN_WIDTH - 90 - credits[0].Bounds.Width,
+                player3.Location.Y - runHeight / 2);
+
+            batch.Begin();
+
+            batch.Draw(
+                credits[(CurrentCreditIndex + 0) % credits.Count],
+                locName1,
+                null,
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f);
+            batch.Draw(
+                credits[(CurrentCreditIndex + 1) % credits.Count],
+                locName2,
+                null,
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f);
+            batch.Draw(
+                credits[(CurrentCreditIndex + 2) % credits.Count],
+                locName3,
+                null,
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f);
+
+            player1.Draw(gameTime, batch);
+            player2.Draw(gameTime, batch);
+            player3.Draw(gameTime, batch);
+
+            batch.End();
         }
 
         public override void DismissingScreen()

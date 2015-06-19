@@ -21,6 +21,7 @@ namespace Vikings.Actors
 
     public class Actor
     {
+        // global list of actors
         public static Dictionary<PlayerIndex, Actor> Actors =
             new Dictionary<PlayerIndex, Actor>();
         
@@ -31,6 +32,9 @@ namespace Vikings.Actors
         public Texture2D texHealthP2;
         public Texture2D texHealthP3;
         public Texture2D texHealthP4;
+
+        public bool IgnoreInput = false;
+        public bool ShowHealth = true;
 
         public Actions CurrentAction = Actions.Idle;
         public const double DAMAGE_TIME = 2.0;
@@ -51,10 +55,10 @@ namespace Vikings.Actors
         {
             if (ShadowColors.Count == 0)
             {
-                ShadowColors.Add(PlayerIndex.One, Color.DarkRed);
+                ShadowColors.Add(PlayerIndex.One, Color.Black);
                 ShadowColors.Add(PlayerIndex.Two, Color.DarkGreen);
                 ShadowColors.Add(PlayerIndex.Three, Color.DarkBlue);
-                ShadowColors.Add(PlayerIndex.Four, Color.Black);
+                ShadowColors.Add(PlayerIndex.Four, Color.DarkRed);
             }
             var color = ShadowColors[PlayerIndex.One];
             color.A = 128;
@@ -148,6 +152,8 @@ namespace Vikings.Actors
             {
                 return;
             }
+
+            if (IgnoreInput) { return; }
 
             var gamepad = GamePad.GetState(PlayerIndex);
             if (gamepad.ThumbSticks.Left.X != 0.0f)
@@ -249,73 +255,6 @@ namespace Vikings.Actors
 
             var depth = 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT + 0.04f;
 
-            batch.Draw(
-                Frames[CurrentAction][CurrentFrame], // texture2D
-                Location, // screen location
-                null, // source rectangle
-                tint, // tint
-                0.0f, // rotation
-                Origin, // origin
-                1.0f, // scale
-                FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
-                depth - 0.01f); // depth
-
-            Rectangle rectBar = new Rectangle(
-                    (int)Location.X - texHealthBar.Width / 2,
-                    (int)Location.Y - texHealthBar.Height - Frames[CurrentAction][CurrentFrame].Bounds.Height,
-                    texHealthBar.Width,
-                    texHealthBar.Height);
-            Vector2 locBar = new Vector2(rectBar.X, rectBar.Y);
-            batch.Draw(
-                texHealthBar, // texture2D
-                rectBar, // screen location
-                null, // source rectangle
-                Color.DarkRed, // tint
-                0.0f, // rotation
-                Vector2.Zero, // origin
-                SpriteEffects.None, // effect
-                depth - 0.02f); // depth
-
-            Rectangle rectHealth = rectBar;
-            rectHealth.Location = Point.Zero;
-            rectBar.Width = rectHealth.Width = 
-                (int)Math.Round(rectHealth.Width * (Health / 100.0f));
-            batch.Draw(
-                texHealthBar, // texture2D
-                rectBar, // screen location
-                rectHealth, // source rectangle
-                Color.Green, // tint
-                0.0f, // rotation
-                Vector2.Zero, // origin
-                SpriteEffects.None, // effect
-                depth - 0.03f); // depth
-            Texture2D texPlayer;
-            switch (PlayerIndex)
-            {
-                case PlayerIndex.Two:
-                    texPlayer = texHealthP2;
-                    break;
-                case PlayerIndex.Three:
-                    texPlayer = texHealthP3;
-                    break;
-                case PlayerIndex.Four:
-                    texPlayer = texHealthP4;
-                    break;
-                default:
-                    texPlayer = texHealthP1;
-                    break;
-            }
-            batch.Draw(
-                texPlayer, // texture2D
-                locBar, // screen location
-                null, // srcRect
-                Color.White, // tint
-                0.0f, // rotation
-                Vector2.Zero, // origin
-                1.0f, // scale
-                SpriteEffects.None, // effect
-                depth - 0.04f); // depth
-
             var texShadow = VikingContent.texShadow;
             var locShadow = Location;
             locShadow.X -= texShadow.Bounds.Width / 2;
@@ -330,6 +269,77 @@ namespace Vikings.Actors
                 1.0f, // scale
                 SpriteEffects.None, // effect
                 depth); // depth
+
+            batch.Draw(
+                Frames[CurrentAction][CurrentFrame], // texture2D
+                Location, // screen location
+                null, // source rectangle
+                tint, // tint
+                0.0f, // rotation
+                Origin, // origin
+                1.0f, // scale
+                FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, // effect
+                depth - 0.01f); // depth
+
+            if (ShowHealth)
+            {
+                Rectangle rectBar = new Rectangle(
+                        (int)Location.X - texHealthBar.Width / 2,
+                        (int)Location.Y - texHealthBar.Height - Frames[CurrentAction][CurrentFrame].Bounds.Height,
+                        texHealthBar.Width,
+                        texHealthBar.Height);
+                Vector2 locBar = new Vector2(rectBar.X, rectBar.Y);
+                batch.Draw(
+                    texHealthBar, // texture2D
+                    rectBar, // screen location
+                    null, // source rectangle
+                    Color.DarkRed, // tint
+                    0.0f, // rotation
+                    Vector2.Zero, // origin
+                    SpriteEffects.None, // effect
+                    depth - 0.02f); // depth
+
+                Rectangle rectHealth = rectBar;
+                rectHealth.Location = Point.Zero;
+                rectBar.Width = rectHealth.Width =
+                    (int)Math.Round(rectHealth.Width * (Health / 100.0f));
+                batch.Draw(
+                    texHealthBar, // texture2D
+                    rectBar, // screen location
+                    rectHealth, // source rectangle
+                    Color.Green, // tint
+                    0.0f, // rotation
+                    Vector2.Zero, // origin
+                    SpriteEffects.None, // effect
+                    depth - 0.03f); // depth
+
+                Texture2D texPlayer;
+                switch (PlayerIndex)
+                {
+                    case PlayerIndex.Two:
+                        texPlayer = texHealthP2;
+                        break;
+                    case PlayerIndex.Three:
+                        texPlayer = texHealthP3;
+                        break;
+                    case PlayerIndex.Four:
+                        texPlayer = texHealthP4;
+                        break;
+                    default:
+                        texPlayer = texHealthP1;
+                        break;
+                }
+                batch.Draw(
+                    texPlayer, // texture2D
+                    locBar, // screen location
+                    null, // srcRect
+                    Color.White, // tint
+                    0.0f, // rotation
+                    Vector2.Zero, // origin
+                    1.0f, // scale
+                    SpriteEffects.None, // effect
+                    depth - 0.04f); // depth
+            }
         }
 
         public bool Collision(PlayerIndex player)

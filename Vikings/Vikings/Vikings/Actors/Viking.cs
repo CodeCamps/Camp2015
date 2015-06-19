@@ -76,7 +76,7 @@ namespace Vikings.Actors
         {
             base.Draw(gametime, batch);
 
-            if (TauntDuration > 0.0)
+            if (TauntDuration > 0.0 && Health > 0)
             {
                 var depth = 1.0f - (float)Location.Y / Game1.SCREEN_HEIGHT + 0.04f;
                 var texBubble = VikingContent.texBubble;
