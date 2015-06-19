@@ -30,6 +30,16 @@ namespace Vikings.Actors
         public static Texture2D texShadow;
         public static Texture2D texBubble;
 
+        public static Texture2D texThree;
+        public static Texture2D texTwo;
+        public static Texture2D texOne;
+        public static Texture2D texFight;
+
+        public static SoundEffect sndFight;
+        public static SoundEffect sndThree;
+        public static SoundEffect sndTwo;
+        public static SoundEffect sndOne;
+
         public static Dictionary<Actions, List<Texture2D>> Frames =
             new Dictionary<Actions, List<Texture2D>>();
 
@@ -121,6 +131,17 @@ namespace Vikings.Actors
             sndTauntsStupid.Add(content.Load<SoundEffect>("sounds/taunts/taunt-8"));
 
             sndThud = content.Load<SoundEffect>("sounds/sfx/thud");
+
+            texThree = content.Load<Texture2D>("321/three");
+            texTwo = content.Load<Texture2D>("321/two");
+            texOne = content.Load<Texture2D>("321/one");
+            texFight = content.Load<Texture2D>("321/fight");
+
+            sndThree = content.Load<SoundEffect>("321/3");
+            sndTwo = content.Load<SoundEffect>("321/2");
+            sndOne = content.Load<SoundEffect>("321/1");
+            sndFight = content.Load<SoundEffect>("321/f1ght");
+
         }
     }
 }

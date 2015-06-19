@@ -86,13 +86,15 @@ namespace Vikings
             base.Update(gameTime);
         }
 
+        public Color BackgroundColor = new Color(0xD9, 0xA0, 0x6D);
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(BackgroundColor);
 
             // TODO: Add your drawing code here
             Screens.Screen.DoDraw(gameTime, spriteBatch);

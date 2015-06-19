@@ -21,6 +21,8 @@ namespace Vikings.Screens
         public static Song music;
         private ContentManager contentManager;
 
+        public Texture2D logo;
+        public Texture2D pressStart;
         public List<Texture2D> credits = new List<Texture2D>();
         public int CurrentCreditIndex = 0;
 
@@ -52,6 +54,9 @@ namespace Vikings.Screens
                 credits.Add(Content.Load<Texture2D>("credits/randon"));
                 credits.Add(Content.Load<Texture2D>("credits/addi"));
                 credits.Add(Content.Load<Texture2D>("credits/joehall"));
+
+                logo = Content.Load<Texture2D>("logo");
+                pressStart = Content.Load<Texture2D>("pressStart");
 
                 player1.LoadContent(Content);
                 player2.LoadContent(Content);
@@ -181,9 +186,32 @@ namespace Vikings.Screens
             var locName3 = new Vector2(
                 Game1.SCREEN_WIDTH - 90 - credits[0].Bounds.Width,
                 player3.Location.Y - runHeight / 2);
-
+            var locNameShadowOffset = Vector2.One * 2.0f;
             batch.Begin();
 
+            batch.Draw(logo, Vector2.Zero, Color.White);
+
+            if ((int)(gameTime.TotalGameTime.TotalSeconds * 2.0) % 2 == 1)
+            {
+                batch.Draw(
+                    pressStart,
+                    new Vector2(
+                        Game1.SCREEN_WIDTH - pressStart.Bounds.Width - 90,
+                        Game1.SCREEN_HEIGHT - pressStart.Bounds.Height - 30
+                        ),
+                    Color.White);
+            }
+
+            batch.Draw(
+                credits[(CurrentCreditIndex + 0) % credits.Count],
+                locName1 + locNameShadowOffset,
+                null,
+                Color.Black,
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f);
             batch.Draw(
                 credits[(CurrentCreditIndex + 0) % credits.Count],
                 locName1,
@@ -194,11 +222,33 @@ namespace Vikings.Screens
                 1.0f,
                 SpriteEffects.None,
                 0.0f);
+
+            batch.Draw(
+                credits[(CurrentCreditIndex + 1) % credits.Count],
+                locName2 + locNameShadowOffset,
+                null,
+                Color.Black,
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f);
             batch.Draw(
                 credits[(CurrentCreditIndex + 1) % credits.Count],
                 locName2,
                 null,
                 Color.White,
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f);
+
+            batch.Draw(
+                credits[(CurrentCreditIndex + 2) % credits.Count],
+                locName3 + locNameShadowOffset,
+                null,
+                Color.Black,
                 0.0f,
                 Vector2.Zero,
                 1.0f,

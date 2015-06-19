@@ -18,6 +18,8 @@ namespace Vikings.Screens
         Actors.Viking player3 = new Actors.Viking();
         Actors.Viking player4 = new Actors.Viking();
 
+        public double CountDown;
+
         public static Texture2D texArena;
         public static Song music;
 
@@ -54,6 +56,9 @@ namespace Vikings.Screens
                 Actors.Actor.Actors.Add(PlayerIndex.Four, player4);
             }
 
+            CountDown = 4.0;
+            played3 = played2 = played1 = playedFight = false;
+
             int i = 0;
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
@@ -66,12 +71,19 @@ namespace Vikings.Screens
                     actor.FacingLeft = actor.Location.X > 0;
                     actor.StartAnimation(Actors.Actions.Idle);
                     actor.Health = 100;
+                    actor.Update(new GameTime());
+                    actor.StartAnimation(Actors.Actions.Idle);
                 }
             }
 
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(music);
         }
+
+        bool played3 = false;
+        bool played2 = false;
+        bool played1 = false;
+        bool playedFight = false;
 
         public override void Update(GameTime gameTime)
         {
@@ -83,9 +95,12 @@ namespace Vikings.Screens
                 var actor = Actors.Actor.Actors[player];
                 if (actor != null && (gamepads[player].IsConnected || player == PlayerIndex.Two))
                 {
+                    actor.IgnoreInput = CountDown > 0.0;
                     actor.Update(gameTime);
                 }
             }
+
+            CountDown -= gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -93,11 +108,81 @@ namespace Vikings.Screens
             base.Draw(gameTime, spriteBatch);
 
             // our cool stuff
-            spriteBatch.Begin();
-            spriteBatch.Draw(texArena, Vector2.Zero, Color.White);
-            spriteBatch.End();
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(texArena, Vector2.Zero, Color.White);
+            //spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
+            spriteBatch.Draw(
+                texArena,
+                Vector2.Zero,
+                null,
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                Vector2.One,
+                SpriteEffects.None,
+                0.5f);
+            Texture2D texCountDown = null;
+            if (CountDown < 0.0) 
+            {
+                //System.Diagnostics.Debug.WriteLine(CountDown);
+            }
+            else if (CountDown < 1.0)
+            {
+                texCountDown = Actors.VikingContent.texFight;
+                if (!playedFight)
+                {
+                    Actors.VikingContent.sndFight.Play();
+                    playedFight = true;
+                }
+            }
+            else if (CountDown < 2.0)
+            {
+                texCountDown = Actors.VikingContent.texOne;
+                if (!played1)
+                {
+                    Actors.VikingContent.sndOne.Play();
+                    played1 = true;
+                }
+            }
+            else if (CountDown < 3.0)
+            {
+                texCountDown = Actors.VikingContent.texTwo;
+                if (!played2)
+                {
+                    Actors.VikingContent.sndTwo.Play();
+                    played2 = true;
+                }
+            }
+            else if (CountDown < 4.0)
+            {
+                texCountDown = Actors.VikingContent.texThree;
+                if (!played3)
+                {
+                    Actors.VikingContent.sndThree.Play();
+                    played3 = true;
+                }
+            }
+
+            if (texCountDown != null)
+            {
+                double fade = CountDown - Math.Floor(CountDown);
+                Vector2 origin = new Vector2(128.0f, 128.0f);
+                Color tint = new Color(1.0f, 1.0f, 1.0f, (float)fade);
+                spriteBatch.Draw(
+                    texCountDown,
+                    Vector2.One * 512.0f,
+                    null,
+                    tint,
+                    (float)fade,
+                    origin,
+                    Vector2.One - Vector2.One * (float)fade,
+                    SpriteEffects.None,
+                    0.4f);
+            }
+
+            
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 var actor = Actors.Actor.Actors[player];
