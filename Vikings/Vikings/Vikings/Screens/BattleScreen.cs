@@ -81,7 +81,7 @@ namespace Vikings.Screens
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 var actor = Actors.Actor.Actors[player];
-                if (actor != null && gamepads[player].IsConnected)
+                if (actor != null && (gamepads[player].IsConnected || player == PlayerIndex.Two))
                 {
                     actor.Update(gameTime);
                 }
@@ -101,7 +101,7 @@ namespace Vikings.Screens
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 var actor = Actors.Actor.Actors[player];
-                if (actor != null && gamepads[player].IsConnected)
+                if (actor != null && (gamepads[player].IsConnected || player == PlayerIndex.Two))
                 {
                     actor.Draw(gameTime, spriteBatch);
                 }

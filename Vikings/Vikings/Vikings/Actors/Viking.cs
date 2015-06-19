@@ -46,7 +46,7 @@ namespace Vikings.Actors
 
             if (TauntDuration <= 0.0)
             {
-                var gamepad = GamePad.GetState(PlayerIndex); 
+                var gamepad = Screens.Screen.GetState(PlayerIndex); 
                 var tauntStupid = 
                     gamepad.IsButtonDown(Buttons.RightShoulder) ||
                     gamepad.Triggers.Right > 0.0f;

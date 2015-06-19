@@ -34,10 +34,42 @@ namespace Vikings.Screens
 
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
-                var gamePadState = GamePad.GetState(player);
+                var gamePadState = Screen.GetState(player);
                 gamepadsPrevious[player] = gamePadState;
                 gamepads[player] = gamePadState;
             }
+        }
+
+        public static GamePadState GetState(PlayerIndex playerIndex)
+        {
+            var gamePadState = GamePad.GetState(playerIndex);
+
+            // emulate missing controller 2 with keyboard
+            if (playerIndex == PlayerIndex.Two && gamePadState.IsConnected == false)
+            {
+                var state = Keyboard.GetState();
+                var leftThumbStick = new Vector2(
+                    state.IsKeyDown(Keys.Left) ? -1.0f :
+                    state.IsKeyDown(Keys.Right) ? 1.0f : 0.0f,
+                    state.IsKeyDown(Keys.Up) ?    1.0f :
+                    state.IsKeyDown(Keys.Down) ? -1.0f : 0.0f);
+                var buttons = new List<Buttons>();
+                if (state.IsKeyDown(Keys.A)) { buttons.Add(Buttons.B); }
+                if (state.IsKeyDown(Keys.S)) { buttons.Add(Buttons.A); }
+                if (state.IsKeyDown(Keys.D)) { buttons.Add(Buttons.Y); }
+                if (state.IsKeyDown(Keys.Enter)) { buttons.Add(Buttons.RightShoulder); }
+                if (state.IsKeyDown(Keys.RightShift)) { buttons.Add(Buttons.LeftShoulder); }
+                if (state.IsKeyDown(Keys.Escape)) { buttons.Add(Buttons.Back); }
+
+                gamePadState = new GamePadState(
+                    leftThumbStick,
+                    Vector2.Zero,
+                    0.0f,
+                    0.0f,
+                    buttons.ToArray());
+            }
+
+            return gamePadState;
         }
 
         protected static Dictionary<PlayerIndex, GamePadState> gamepads =
@@ -61,7 +93,7 @@ namespace Vikings.Screens
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 gamepadsPrevious[player] = gamepads[player];
-                gamepads[player] = GamePad.GetState(player);
+                gamepads[player] = Screen.GetState(player);
 
                 if (gamepads[player].Buttons.Back == ButtonState.Pressed)
                 {

@@ -155,7 +155,7 @@ namespace Vikings.Actors
 
             if (IgnoreInput) { return; }
 
-            var gamepad = GamePad.GetState(PlayerIndex);
+            var gamepad = Screens.Screen.GetState(PlayerIndex);
             if (gamepad.ThumbSticks.Left.X != 0.0f)
             {
                 Location.X += gamepad.ThumbSticks.Left.X * 5.0f;
@@ -172,6 +172,7 @@ namespace Vikings.Actors
 
             if (gamepad.ThumbSticks.Left.Y != 0.0f)
             {
+                action = Actions.Walk;
                 Location.Y += -gamepad.ThumbSticks.Left.Y * 5.0f;
             }
 

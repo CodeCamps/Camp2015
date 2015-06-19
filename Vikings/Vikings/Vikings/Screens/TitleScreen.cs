@@ -134,21 +134,22 @@ namespace Vikings.Screens
             foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
                 var gamepad = gamepads[player];
-                if (gamepad.IsConnected && gamepad.IsButtonDown(Buttons.A))
+                var isConnected = gamepad.IsConnected || player == PlayerIndex.Two;
+                if (isConnected && gamepad.IsButtonDown(Buttons.A))
                 {
                     if (gamepadsPrevious[player].IsButtonUp(Buttons.A))
                     {
                         start = true;
                     }
                 }
-                if (gamepad.IsConnected && gamepad.IsButtonDown(Buttons.Start))
+                if (isConnected && gamepad.IsButtonDown(Buttons.Start))
                 {
                     if (gamepadsPrevious[player].IsButtonUp(Buttons.Start))
                     {
                         start = true;
                     }
                 }
-                if (gamepad.IsConnected && gamepad.IsButtonDown(Buttons.Back))
+                if (isConnected && gamepad.IsButtonDown(Buttons.Back))
                 {
                     if (gamepadsPrevious[player].IsButtonUp(Buttons.Back))
                     {
