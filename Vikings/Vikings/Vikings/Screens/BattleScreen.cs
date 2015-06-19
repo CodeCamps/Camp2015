@@ -172,7 +172,7 @@ namespace Vikings.Screens
                 Color tint = new Color(1.0f, 1.0f, 1.0f, (float)fade);
                 spriteBatch.Draw(
                     texCountDown,
-                    Vector2.One * 512.0f,
+                    Vector2.One * (float)(Game1.SCREEN_WIDTH / 2),
                     null,
                     tint,
                     (float)fade,
